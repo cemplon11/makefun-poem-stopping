@@ -17,15 +17,28 @@ POEM = (
     "To stay is to spend it where you stand."
 )
 
+OUTPUT_PATH = os.path.join("/output", "entry.txt")
+
+
+def validate_poem(text: str) -> str:
+    """Check the poem fits the 1–280 code-point bound and is non-blank."""
+    if not 1 <= len(text) <= 280:
+        raise ValueError(f"poem is {len(text)} code points, must be 1–280")
+    if not text.strip():
+        raise ValueError("poem must not be only whitespace")
+    return text
+
+
+def write_poem(text: str, path: str) -> None:
+    """Write the validated poem to path, creating its directory first."""
+    validated = validate_poem(text)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        f.write(validated)
+
 
 def main() -> None:
-    text = POEM
-    assert 1 <= len(text) <= 280, f"poem is {len(text)} code points"
-    assert text.strip(), "poem must not be only whitespace"
-    out_dir = "/output"
-    os.makedirs(out_dir, exist_ok=True)
-    with open(os.path.join(out_dir, "entry.txt"), "w", encoding="utf-8", newline="\n") as f:
-        f.write(text)
+    write_poem(POEM, OUTPUT_PATH)
 
 
 if __name__ == "__main__":
